@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 class site_info(BaseModel):
+    
     UsingIP: int
     LongURL: int
     ShortURL: int
