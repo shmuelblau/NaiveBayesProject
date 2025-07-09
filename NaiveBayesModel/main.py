@@ -1,8 +1,8 @@
+import json
 from fastapi import FastAPI
-from pydantic import BaseModel
-import pandas as pd
-from NaiveBayesModel.NaiveBayes import NaiveBayes
-from classes.site_info import site_info
+from models.NaiveBayes import NaiveBayes
+from classes.fit_request import fit_request
+from services.creat_df import creat_df
 import os
 
 app = FastAPI()
@@ -21,19 +21,27 @@ def home():
     return "הכל עובד"
 
 @app.post("/fit")
-def fit(data: list[site_info], labels: list[int]):
-    df = pd.DataFrame([site_info.dict() for site_info in data])
-    y = pd.Series(labels)
-    model.fit(df, y)
+def fit(request:fit_request):
+    
+    x , y  = creat_df.fit_df_from_request(request)
+    
+    if x is None or y is None:
+        return {"status":"problem in data"}
+
+    model.fit(x, y)
     model.save(MODEL_PATH)
     return {"status": "model trained and saved"}
 
 
-@app.post("/predict")
-def predict(site_info: site_info):
-    # df = pd.DataFrame([item.dict()])
-    # pred = model.predict_row(df.iloc[0])
-    # return {"prediction": int(pred)}
-    return
+@app.post("/Prediction")
+def Prediction(request:fit_request):
+    df = creat_df.Prediction_df_from_request(request)
+    
+    if df is None:
+        return {"status":"problem in data"}
+    result = model.predict(df)
+    df["class"] = result
+    
+    return json.loads(df.to_json(orient="records"))
 
 
