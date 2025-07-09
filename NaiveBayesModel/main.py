@@ -1,8 +1,9 @@
 import json
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from models.NaiveBayes import NaiveBayes
 from classes.fit_request import fit_request
-from services.creat_df import creat_df
+from services.create_df import create_df
 import os
 
 app = FastAPI()
@@ -23,7 +24,7 @@ def home():
 @app.post("/fit")
 def fit(request:fit_request):
     
-    x , y  = creat_df.fit_df_from_request(request)
+    x , y  = create_df.fit_df_from_request(request)
     
     if x is None or y is None:
         return {"status":"problem in data"}
@@ -35,13 +36,15 @@ def fit(request:fit_request):
 
 @app.post("/Prediction")
 def Prediction(request:fit_request):
-    df = creat_df.Prediction_df_from_request(request)
+    df = create_df.Prediction_df_from_request(request)
     
     if df is None:
         return {"status":"problem in data"}
     result = model.predict(df)
     df["class"] = result
     
-    return json.loads(df.to_json(orient="records"))
+    data = df.to_dict(orient="records")
+    
+    return JSONResponse(status_code=200,content=data)
 
 
