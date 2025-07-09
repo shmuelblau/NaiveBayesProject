@@ -1,0 +1,4 @@
+class cleaner:
+
+    @staticmethod
+    def 

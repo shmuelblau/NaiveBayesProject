@@ -1,7 +1,7 @@
 import pandas as pd
 from io import StringIO
 from classes.fit_request import fit_request
-class creat_df:
+class create_df:
 
     @staticmethod
     def fit_df_from_request(request : fit_request):
@@ -26,7 +26,7 @@ class creat_df:
     def Prediction_df_from_request(request : fit_request):
         df = None
         if request.data_type == "json":
-            df = pd.DataFrame([item.dict() for item in request.json_data]) # type: ignore
+            df = pd.DataFrame([item for item in request.json_data]) # type: ignore
 
         elif request.data_type == "csv":
             df = pd.read_csv(StringIO(request.csv_data))
