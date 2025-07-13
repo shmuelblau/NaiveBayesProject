@@ -25,10 +25,11 @@ def fit(request:data_request):
     df = servises.df_from_request(request)
 
     if df is None :
-        return {"status": "model trained and saved" }
+        return {"status":"problem in data"}
+
     
     
-    data = data = df.to_dict(orient="records")
+    data = df.to_dict(orient="records")
 
     return JSONResponse(status_code=200,content=data)
 

@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from models.NaiveBayes import NaiveBayes
 from classes.fit_request import fit_request
+from classes.prediction_request import prediction_request
 from services.create_df import create_df
 import os
 
@@ -35,7 +36,7 @@ def fit(request:fit_request):
 
 
 @app.post("/Prediction")
-def Prediction(request:fit_request):
+def Prediction(request:prediction_request):
     df = create_df.Prediction_df_from_request(request)
     
     if df is None:
