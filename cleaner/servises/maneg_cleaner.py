@@ -6,16 +6,20 @@ class maneg_cleaner:
 
     @staticmethod
     def clean_by_request(df:pd.DataFrame , request : clean_request):
-
-        for fank , coloms in request.processes:
+       
+        for fank , coloms in request.processes.items():
+            
             if len(coloms) == 0 :
                 df = cleaner.cleaning_functions[fank](df)
                 continue
 
             if coloms[0] == "all":
                 coloms = df.columns.tolist()
+                
 
             for col in coloms:
+                print(col)
                 df = cleaner.cleaning_functions[fank](df , col)
+                print(df)
 
         return df

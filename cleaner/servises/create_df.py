@@ -1,4 +1,4 @@
-from cleaner.classes.clean_request import clean_request
+from classes.clean_request import clean_request
 import pandas as pd
 
 class create_df:
