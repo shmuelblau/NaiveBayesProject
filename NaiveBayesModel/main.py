@@ -1,8 +1,10 @@
 import json
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+import pandas as pd
 from models.NaiveBayes import NaiveBayes
 from classes.fit_request import fit_request
+from classes.prediction_request import prediction_request
 from services.create_df import create_df
 import os
 
@@ -35,7 +37,7 @@ def fit(request:fit_request):
 
 
 @app.post("/Prediction")
-def Prediction(request:fit_request):
+def Prediction(request:prediction_request):
     df = create_df.Prediction_df_from_request(request)
     
     if df is None:
@@ -44,7 +46,10 @@ def Prediction(request:fit_request):
     df["class"] = result
     
     data = df.to_dict(orient="records")
-    
+    data = [{k: v for k, v in row.items() if not pd.isna(v)} for row in data]
     return JSONResponse(status_code=200,content=data)
 
 
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

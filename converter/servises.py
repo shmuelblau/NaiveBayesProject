@@ -14,8 +14,10 @@ class servises:
             df = pd.read_csv(StringIO(request.data)) # type: ignore
 
         elif request.data_type == "csv_path":
+            print(11111111111111111111111111111111111111)
         
             df = pd.read_csv(request.data)# type: ignore
+            print(22222222222222222222222222222222222222222222222)
         
         elif request.data_type == "db_path":
             
