@@ -1,7 +1,6 @@
 import pandas as pd
-from io import StringIO
 from classes.fit_request import fit_request
-from classes.prediction_request import prediction_request
+
 
 class create_df:
 
@@ -20,7 +19,4 @@ class create_df:
         
 
 
-    @staticmethod
-    def Prediction_df_from_request(request : prediction_request):
-        
-        return pd.DataFrame(request.data)
+   
