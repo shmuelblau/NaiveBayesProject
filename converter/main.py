@@ -29,7 +29,7 @@ def fit(request:data_request):
     if df is None :
         return {"status":"problem in data"}
     
-    print(df.head())
+   
 
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
     df.fillna(0, inplace=True)

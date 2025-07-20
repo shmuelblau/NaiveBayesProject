@@ -2,13 +2,29 @@ version: '3.8'
 
 services:
   
-  naive-bayes-model:
-    build: ./NaiveBayesModel
+  trainer:
+    build: ./trainer
     restart: always
     ports:
       - "8000:8000"
     
     command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+
+    volumes:
+      - Models-data:/app/data
+
+
+  predicter:
+    build: ./predicter
+    restart: always
+    ports:
+      - "8000:8000"
+    
+    command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+    volumes:
+      - Models-data:/app/data
+
+
 
   converter:
     build: ./converter
@@ -26,3 +42,5 @@ services:
       - "8002:8000"
     
     command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+volumes:
+  Models-data:
