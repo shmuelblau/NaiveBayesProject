@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predicter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: predicter
+  template:
+    metadata:
+      labels:
+        app: predicter
+    spec:
+      containers:
+        - name: predicter
+          image: predicter:latest
+          imagePullPolicy: Never
+          command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - mountPath: /app/data
+              name: models-data
+      volumes:
+        - name: models-data
+          persistentVolumeClaim:
+            claimName: models-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: predicter-service
+spec:
+  selector:
+    app: predicter
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
