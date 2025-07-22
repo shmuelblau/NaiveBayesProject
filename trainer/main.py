@@ -8,7 +8,7 @@ import os
 app = FastAPI()
 
 model = NaiveBayes()
-MODEL_PATH = "model.pkl"
+
 
 
 
@@ -25,7 +25,7 @@ def fit(request:fit_request):
         return {"status":"problem in data"}
 
     model.fit(x, y)
-    model.save(request.name+".pkl")
+    model.save("data/" + request.name + ".pkl")
     return {"status": "model trained and saved"}
 
 
