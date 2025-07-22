@@ -1,8 +1,9 @@
 from io import StringIO
-from data_request import data_request
+from classes.data_request import data_request
 import pandas as pd
 from sqlalchemy import create_engine
-class servises:
+
+class converter:
 
     @staticmethod
     def df_from_request(request : data_request):

@@ -1,9 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-resources:
-  - models-data-pv-pvc.yaml
-  - trainer-deployment.yaml
-  - predicter-deployment.yaml
-  - converter-deployment.yaml
-  - cleaner-deployment.yaml
