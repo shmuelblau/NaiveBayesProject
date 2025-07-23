@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import pandas as pd
@@ -10,9 +11,17 @@ app = FastAPI()
 
 model = NaiveBayes()
 
-PATH = "data/"
+PATH = "/app/data/"
 
-
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    handlers=[
+        # es_handler,
+        logging.FileHandler("logs/prediction.log"),
+        logging.StreamHandler()
+    ]
+)
 
 
 @app.get("/")
@@ -24,6 +33,9 @@ def home():
 
 @app.post("/Prediction")
 def Prediction(request:prediction_request):
+
+    logging.info(f"Prediction request, model name:{request.name}")
+
     df = pd.DataFrame(request.data)
     
     if df is None:

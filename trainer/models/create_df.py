@@ -6,6 +6,7 @@ class create_df:
 
     @staticmethod
     def fit_df_from_request(request : fit_request):
+        print(request)
 
         df = pd.DataFrame(request.data)
 

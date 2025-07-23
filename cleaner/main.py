@@ -1,4 +1,5 @@
 import json
+import logging
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 import numpy as np
@@ -11,6 +12,15 @@ from servises.maneg_cleaner import maneg_cleaner
 
 app = FastAPI()
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    handlers=[
+        # es_handler,
+        logging.FileHandler("logs/cleaner.log"),
+        logging.StreamHandler()
+    ]
+)
 
 @app.get("/")
 def home():
@@ -18,6 +28,7 @@ def home():
 
 @app.post("/clean")
 def clean(request:clean_request):
+    logging.info(f"clean request, processes len:{len(request.processes.items())}")
     try:
         df = create_df.create_df(request)
         

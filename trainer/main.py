@@ -1,3 +1,4 @@
+import logging
 from fastapi import FastAPI
 import pandas as pd
 from models.naiveBayese import NaiveBayes
@@ -9,8 +10,15 @@ app = FastAPI()
 
 model = NaiveBayes()
 
-
-
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    handlers=[
+        # es_handler,
+        logging.FileHandler("logs/trainer.log"),
+        logging.StreamHandler()
+    ]
+)
 
 @app.get("/")
 def home():
@@ -19,13 +27,15 @@ def home():
 @app.post("/fit")
 def fit(request:fit_request):
     
+    logging.info(f"trainer request, model name:{request.name}")
+    
     x , y  = create_df.fit_df_from_request(request)
     
     if x is None or y is None:
         return {"status":"problem in data"}
 
     model.fit(x, y)
-    model.save("data/" + request.name + ".pkl")
+    model.save("/app/data/" + request.name + ".pkl")
     return {"status": "model trained and saved"}
 
 
