@@ -12,6 +12,7 @@ services:
 
     volumes:
       - Models-data:/app/data
+      - logs:/app/logs
 
 
   predicter:
@@ -23,6 +24,8 @@ services:
     command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
     volumes:
       - Models-data:/app/data
+      - logs:/app/logs
+
 
 
 
@@ -34,6 +37,11 @@ services:
     
     command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
 
+    volumes:
+      - logs:/app/logs
+
+
+
   cleaner:
     build: ./cleaner
 
@@ -42,5 +50,23 @@ services:
       - "8003:8000"
     
     command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+
+    volumes:
+      - logs:/app/logs
+
+
+
+  dashboard:
+    build: ./dashboard
+
+    restart: always
+    ports:
+      - "8004:8501"
+    command: ["streamlit", "run", "dashboard.py"]
+
+
+
+
 volumes:
   Models-data:
+  logs:

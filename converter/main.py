@@ -1,4 +1,5 @@
 
+import logging
 from fastapi import FastAPI
 import numpy as np
 import pandas as pd
@@ -11,7 +12,15 @@ from data_request import data_request
 app = FastAPI()
 
 
-
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(message)s",
+    handlers=[
+        # es_handler,
+        logging.FileHandler("logs/converter.log"),
+        logging.StreamHandler()
+    ]
+)
 
 
 
@@ -21,8 +30,8 @@ def home():
 
 @app.post("/convert")
 def fit(request:data_request):
-    print(request.data_type)
-    print(request.data)
+    
+    logging.info(f"convert request , from type {request.data_type}")
 
     df = servises.df_from_request(request)
 

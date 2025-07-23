@@ -5,7 +5,7 @@ import pickle
 class NaiveBayes:
     def __init__(self):
         self._classes = []
-        self._class_priors = {}
+        self._priors = {}
         self._feature_probs = {}
 
     
@@ -34,9 +34,14 @@ class NaiveBayes:
 
     def _predict_proba(self, X: pd.DataFrame):
         results = []
+        print(111111111111111111111)
+        print(self._classes)
+        print(111111111111111111111)
         for _, row in X.iterrows():
             probs = {}
             for c in self._classes:
+                
+                print(self._priors)
                 log_prob = np.log(self._priors[c])
                 for col in X.columns:
                     val = row[col]
@@ -55,7 +60,7 @@ class NaiveBayes:
         with open(path, "wb") as f:
             pickle.dump({
                 "classes": self._classes,
-                "class_priors": self._class_priors,
+                "class_priors": self._priors,
                 "feature_probs": self._feature_probs
             }, f)
 
@@ -63,5 +68,5 @@ class NaiveBayes:
         with open(path, "rb") as f:
             data = pickle.load(f)
             self._classes = data["classes"]
-            self._class_priors = data["class_priors"]
+            self._priors = data["class_priors"]
             self._feature_probs = data["feature_probs"]
