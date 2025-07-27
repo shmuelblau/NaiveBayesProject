@@ -2,12 +2,14 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import requests
 import pandas as pd
+import os 
 
 
 
-FIT_URL = "http://trainer:8000/fit"
-PREDICT_URL = "http://predicter:8000/Prediction"
 
+FIT_URL = os.getenv("FIT_URL")
+
+PREDICT_URL = os.getenv("PREDICT_URL")
 
 if "table_json" not in st.session_state:
     st.session_state.table_json = []

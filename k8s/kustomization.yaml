@@ -7,3 +7,7 @@ resources:
   - predicter-deployment.yaml
   - converter-deployment.yaml
   - cleaner-deployment.yaml
+  - dashboard-deployment.yaml
+  - Secrets.yaml
+
+

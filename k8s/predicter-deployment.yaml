@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: predicter
-          image: predicter:latest
+          image: naivebayesproject-predicter:latest
           imagePullPolicy: Never
           command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
           ports:

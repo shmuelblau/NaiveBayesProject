@@ -13,6 +13,9 @@ services:
     volumes:
       - Models-data:/app/data
       - logs:/app/logs
+    networks:
+      Models:
+
 
 
   predicter:
@@ -25,6 +28,8 @@ services:
     volumes:
       - Models-data:/app/data
       - logs:/app/logs
+    networks:
+      Models:
 
 
 
@@ -39,6 +44,8 @@ services:
 
     volumes:
       - logs:/app/logs
+    networks:
+      Models:
 
 
 
@@ -53,6 +60,8 @@ services:
 
     volumes:
       - logs:/app/logs
+    networks:
+      Models:
 
 
 
@@ -64,9 +73,56 @@ services:
       - "8004:8501"
     command: ["streamlit", "run", "dashboard.py"]
 
+    networks:
+      Models:
+
+
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "8005:9200"
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    networks:
+      db:
+
+  
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.4
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    networks:
+      db:
+
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.13.4
+    container_name: filebeat
+    user: root
+    volumes:
+      - ./DB/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - logs:/logs
+    command: ["sh", "-c", "chmod go-w /usr/share/filebeat/filebeat.yml && filebeat -e"]
+    depends_on:
+      - elasticsearch
+    networks:
+      db:
 
 
 
 volumes:
   Models-data:
   logs:
+  elastic_data:
+
+networks:
+  db:
+  Models:
