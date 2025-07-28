@@ -6,19 +6,28 @@ import os
 
 
 
+# -------------------------------------------------------------------------------
 
-FIT_URL = os.getenv("FIT_URL")
+FIT_URL = os.getenv("FIT_URL" ,"http://127.0.0.1:8000/fit")
 
-PREDICT_URL = os.getenv("PREDICT_URL")
+PREDICT_URL = os.getenv("PREDICT_URL" , "http://127.0.0.1:8001/Prediction")
 
+CLEAN_URL = os.getenv("CLEAN_URL" ,"http://127.0.0.1:8002/clean")
+
+# -------------------------------------------------------------------------------
 if "table_json" not in st.session_state:
     st.session_state.table_json = []
 if "df" not in st.session_state:
     st.session_state.df = pd.DataFrame()
 
+if "processes" not in st.session_state:
+    st.session_state.processes = {}
+# -------------------------------------------------------------------------------
 
 col1, col2 = st.columns(2)
 
+# ===============================================================================
+# ===============================================================================
 
 with col1:
    
@@ -37,10 +46,14 @@ with col1:
         st.session_state.table_json = table_json
         st.session_state.df = df
 
+        st.session_state.processes = {}
+
 
 
     
 
+# =====================================================================================
+# =====================================================================================
 
 
 
@@ -48,21 +61,16 @@ with col1:
 
 with col2:
 
-    
+    choice = st.radio("בחר פעולה" ,["אימון מודל" ,"חיזוי","ניקוי"] )
 
 
-    choice = st.radio("בחר פעולה" ,["אימון מודל" ,"חיזוי"] )
-
+# =================================================================================
     if choice == "אימון מודל":
         model_name = st.text_input("שם מודל")
         target = st.text_input("עמודה לחיזוי")
-        start = st.button("אמן")
+        start_train = st.button("אמן")
 
-        
-
-       
-
-        if start  :
+        if start_train  :
             payload = {
             "name": model_name,
             "data" : st.session_state.table_json ,
@@ -73,18 +81,13 @@ with col2:
             response = requests.post(FIT_URL, json=payload)
 
             st.write(response.status_code)
-
-
+# =============================================================================
     if choice == "חיזוי":
         model_name = st.text_input("שם מודל")
         
-        start2 = st.button("חזה")
+        start_predict = st.button("חזה")
 
-        
-
-       
-
-        if start2  :
+        if start_predict  :
             payload = {
             "name": model_name,
             "data" : st.session_state.table_json ,
@@ -100,9 +103,51 @@ with col2:
 
             st.session_state.df = pd.DataFrame(response.json())
 
+# =====================================================================================
+    if choice == "ניקוי":
+
+        processes_list = [
+            "fill_null_with_mean",
+            "fill_null_with_mode",
+            "fill_null_with_zeros",
+            "fill_null_with_ones",
+            "convert_numeric",
+            "strip_strings",
+            "lowercase_strings",
+            "remove_special_chars",
+            "standardize_dates",
+            "remove_outliers",
+            "normalize_columns",
+            "encode_categories",
+            "remove_constant_columns",
+            "remove_empty_columns",
+            "remove_long_texts"
+            ]
+        
+        if len(st.session_state.table_json) == 0:
+            Columns = []
+        else:
+            Columns = st.session_state.table_json[0].keys()
+       
+       
+
+        process = st.selectbox("שם פעולה :", processes_list)
+        Columns_cselected = st.multiselect("בחר עמודות:", Columns)
+
+        add = st.button("הוסף")
+        if add:
+            st.session_state.processes[process] = Columns_cselected
 
 
-st.write(st.session_state.df)
+        start_clean = st.button("נקה")
+
+        if start_clean:
+            print(st.session_state.processes)
+        
+
+
+if not st.session_state.df.empty:
+   st.write(st.session_state.df)
     
 
 
