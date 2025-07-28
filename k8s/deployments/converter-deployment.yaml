@@ -1,35 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cleaner
+  name: converter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cleaner
+      app: converter
   template:
     metadata:
       labels:
-        app: cleaner
+        app: converter
     spec:
       containers:
-        - name: cleaner
-          image: naivebayesproject-cleaner:latest
+        - name: converter
+          image: naivebayesproject-converter:latest
           imagePullPolicy: Never
           command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
           ports:
             - containerPort: 8000
+          volumeMounts:
+            - mountPath: /app/logs
+              name: logs
+
+      volumes:
+        - name: logs
+          persistentVolumeClaim:
+              claimName: logs-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: cleaner-service
+  name: converter-service
 spec:
   selector:
-    app: cleaner
+    app: converter
   ports:
     - protocol: TCP
       port: 8000
       targetPort: 8000
-      nodePort: 30003
-  type: NodePort
+  type: ClusterIP

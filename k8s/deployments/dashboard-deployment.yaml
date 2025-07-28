@@ -19,18 +19,9 @@ spec:
           command: ["streamlit", "run", "dashboard.py"]
           ports:
             - containerPort: 8501
-          env:
-            - name: PREDICT_URL
-              valueFrom:
-                secretKeyRef:
-                  name: service-urls-secret
-                  key: PREDICT_URL
-
-            - name: FIT_URL
-              valueFrom:
-                secretKeyRef:
-                  name: service-urls-secret
-                  key: FIT_URL
+          envFrom:
+           - configMapRef:
+              name: dashboard-config
 
 ---
 apiVersion: v1

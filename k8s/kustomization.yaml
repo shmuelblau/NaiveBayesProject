@@ -2,12 +2,21 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - models-data-pv-pvc.yaml
-  - trainer-deployment.yaml
-  - predicter-deployment.yaml
-  - converter-deployment.yaml
-  - cleaner-deployment.yaml
-  - dashboard-deployment.yaml
-  - Secrets.yaml
+  - deployments/trainer-deployment.yaml
+  - deployments/predicter-deployment.yaml
+  - deployments/converter-deployment.yaml
+  - deployments/cleaner-deployment.yaml
+  - deployments/dashboard-deployment.yaml
+  - deployments/filebeat-deployment.yaml
+  - deployments/elasticsearch-deployment.yaml
+
+  - volumes/elastic-data-pv-pvc.yaml
+  - volumes/models-data-pv-pvc.yaml
+  - volumes/logs-pv-pvc.yaml
+  
+  - configmaps-secrets/Secrets.yaml
+  - configmaps-secrets/dashboard-config.yaml
+  - configmaps-secrets/filebeat-config.yaml
+  
 
 

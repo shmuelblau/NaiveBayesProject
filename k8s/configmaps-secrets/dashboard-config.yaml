@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashboard-config
+data:
+  FIT_URL: http://trainer-service:8000/fit
+  PREDICT_URL: http://predicter-service:8000/Prediction

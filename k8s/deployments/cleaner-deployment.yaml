@@ -1,41 +1,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: trainer
+  name: cleaner
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: trainer
+      app: cleaner
   template:
     metadata:
       labels:
-        app: trainer
+        app: cleaner
     spec:
       containers:
-        - name: trainer
-          image: naivebayesproject-trainer:latest
+        - name: cleaner
+          image: naivebayesproject-cleaner:latest
           imagePullPolicy: Never
           command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
           ports:
             - containerPort: 8000
+
           volumeMounts:
-            - mountPath: /app/data
-              name: models-data
+            - mountPath: /app/logs
+              name: logs
+
       volumes:
-        - name: models-data
+        - name: logs
           persistentVolumeClaim:
-            claimName: models-data-pvc
+              claimName: logs-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: trainer-service
+  name: cleaner-service
 spec:
   selector:
-    app: trainer
+    app: cleaner
   ports:
     - protocol: TCP
       port: 8000
       targetPort: 8000
-  type: ClusterIP
+      nodePort: 30003
+  type: NodePort
