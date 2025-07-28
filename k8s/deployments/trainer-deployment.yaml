@@ -1,28 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: predicter
+  name: trainer
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: predicter
+      app: trainer
   template:
     metadata:
       labels:
-        app: predicter
+        app: trainer
     spec:
       containers:
-        - name: predicter
-          image: naivebayesproject-predicter:latest
+        - name: trainer
+          image: naivebayesproject-trainer:latest
           imagePullPolicy: Never
           command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
           ports:
             - containerPort: 8000
           volumeMounts:
+            - mountPath: /app/logs
+              name: logs
             - mountPath: /app/data
               name: models-data
+              
       volumes:
+        - name: logs
+          persistentVolumeClaim:
+              claimName: logs-pvc
         - name: models-data
           persistentVolumeClaim:
             claimName: models-data-pvc
@@ -30,10 +36,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: predicter-service
+  name: trainer-service
 spec:
   selector:
-    app: predicter
+    app: trainer
   ports:
     - protocol: TCP
       port: 8000
