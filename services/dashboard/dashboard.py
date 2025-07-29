@@ -12,7 +12,10 @@ FIT_URL = os.getenv("FIT_URL" ,"http://127.0.0.1:8000/fit")
 
 PREDICT_URL = os.getenv("PREDICT_URL" , "http://127.0.0.1:8001/Prediction")
 
-CLEAN_URL = os.getenv("CLEAN_URL" ,"http://127.0.0.1:8002/clean")
+CLEAN_URL = os.getenv("CLEAN_URL" ,"http://cleaner:8000/clean")
+
+CONVERT_URL = os.getenv("CLEAN_URL" ,"http://converter:8000/convert")
+
 
 # -------------------------------------------------------------------------------
 if "table_json" not in st.session_state:
@@ -142,7 +145,21 @@ with col2:
         start_clean = st.button("נקה")
 
         if start_clean:
-            print(st.session_state.processes)
+
+            
+            payload = {
+            "processes": st.session_state.processes ,
+            "data" : st.session_state.table_json 
+            
+            }
+
+            response = requests.post(CLEAN_URL, json=payload)
+
+            st.write("מוצג עם תוצאות" if response.status_code == 200 else "נכשל")
+
+
+            st.session_state.table_json = response.json()
+            st.session_state.df = pd.DataFrame(response.json())
         
 
 

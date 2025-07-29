@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  
+  trainer:
+    build: ./trainer
+    restart: always
+    ports:
+      - "8000:8000"
+    
+    command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+
+    volumes:
+      - Models-data:/app/data
+      - logs:/app/logs
+    networks:
+      Models:
+
+
+
+  predicter:
+    build: ./predicter
+    restart: always
+    ports:
+      - "8001:8000"
+    
+    command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+    volumes:
+      - Models-data:/app/data
+      - logs:/app/logs
+    networks:
+      Models:
+
+
+
+
+  converter:
+    build: ./converter
+    restart: always
+    ports:
+      - "8002:8000"
+    
+    command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+
+    volumes:
+      - logs:/app/logs
+    networks:
+      Models:
+
+
+
+  cleaner:
+    build: ./cleaner
+
+    restart: always
+    ports:
+      - "8003:8000"
+    
+    command: ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
+
+    volumes:
+      - logs:/app/logs
+    networks:
+      Models:
+
+
+
+  dashboard:
+    build: ./dashboard
+
+    restart: always
+    ports:
+      - "8004:8501"
+    command: ["streamlit", "run", "dashboard.py"]
+
+    networks:
+      Models:
+
+
+
+  
+  
+  
+
+  
+
+
+
+volumes:
+  Models-data:
+  logs:
+ 
+
+networks:
+
+  Models:
