@@ -100,11 +100,19 @@ with col2:
 
             response = requests.post(PREDICT_URL, json=payload)
 
-            st.write("מוצג עם תוצאות" if response.status_code == 200 else "נכשל")
+            if response.status_code == 200:
+
+               st.write("מוצג עם תוצאות" )
+
+               st.write(response.json())
+               st.session_state.df = pd.DataFrame(response.json())
+            else:
+                st.write("נכשל" )
+                st.write(response.json())
 
 
 
-            st.session_state.df = pd.DataFrame(response.json())
+           
 
 # =====================================================================================
     if choice == "ניקוי":
