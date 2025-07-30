@@ -46,6 +46,7 @@ def Prediction(request:prediction_request):
           model.load(PATH + request.name + ".pkl")
 
     else:
+        return JSONResponse(status_code=401,content="problem in model")
         return {"status":"problem in model"}
     
 
